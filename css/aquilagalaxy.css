@@ -101,23 +101,45 @@ h6 {
 }
 
 .default-btn,
+.default-btn:focus,
+.default-btn:hover,
 .menu-btn,
+.menu-btn:focus,
+.menu-btn:hover,
 .dl-btn,
+.dl-btn:focus,
+.dl-btn:hover,
 .submit-btn,
-.service-carousel .owl-nav div:hover,
-.projects-carousel .owl-nav div:hover,
-#scroll-to-top,
-.slick-dots li.slick-active button,
-.slick-dots li button:hover {
-    background-color: var(--aquila-primary);
+.submit-btn:focus,
+.submit-btn:hover {
+    background-color: var(--aquila-primary) !important;
+    border-color: var(--aquila-primary) !important;
+    color: #fff !important;
 }
 
 .default-btn:hover,
+.default-btn:focus,
 .menu-btn:hover,
+.menu-btn:focus,
 .dl-btn:hover,
+.dl-btn:focus,
 .submit-btn:hover,
+.submit-btn:focus,
 #scroll-to-top:hover {
-    background-color: var(--aquila-primary-dark);
+    background-color: var(--aquila-primary-dark) !important;
+    border-color: var(--aquila-primary-dark) !important;
+}
+
+.default-btn,
+.menu-btn,
+.dl-btn,
+.submit-btn,
+#scroll-to-top,
+.service-carousel .owl-nav div:hover,
+.projects-carousel .owl-nav div:hover,
+.slick-dots li.slick-active button,
+.slick-dots li button:hover {
+    background-color: var(--aquila-primary) !important;
 }
 
 .default-btn,
