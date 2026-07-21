@@ -1,0 +1,399 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700|Poppins:600,700&display=swap');
+
+:root {
+    --aquila-primary: #19c6cf;
+    --aquila-primary-dark: #0d8f97;
+    --aquila-ink: #183247;
+    --aquila-ink-soft: #587184;
+    --aquila-surface: #f4fbfc;
+    --aquila-border: rgba(25, 198, 207, 0.16);
+    --aquila-shadow: 0 20px 45px rgba(24, 50, 71, 0.08);
+}
+
+body {
+    color: var(--aquila-ink-soft);
+}
+
+a {
+    color: inherit;
+}
+
+::selection {
+    background: var(--aquila-primary);
+    color: #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--aquila-ink);
+}
+
+.site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--aquila-ink);
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+}
+
+.site-brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--aquila-primary), #6ddde3);
+    color: #fff;
+    font-size: 17px;
+    box-shadow: 0 10px 24px rgba(25, 198, 207, 0.35);
+}
+
+.site-brand-text {
+    display: inline-flex;
+    flex-direction: column;
+    line-height: 1.05;
+}
+
+.site-brand-text small {
+    color: var(--aquila-primary-dark);
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.header .primary-header .header-menu-wrap ul li a:hover,
+.header .primary-header .header-menu-wrap ul li.active a,
+.sticky-header .primary-header .header-menu-wrap ul li a:hover,
+.sticky-header .primary-header .header-menu-wrap ul li.active a,
+.section-heading span,
+.service-item .read-more,
+.projects-content .category,
+.widget-content .widget-links li a:hover,
+.contact-info h4 span,
+.page-content p a {
+    color: var(--aquila-primary);
+}
+
+.default-btn,
+.menu-btn,
+.dl-btn,
+.submit-btn,
+.service-carousel .owl-nav div:hover,
+.projects-carousel .owl-nav div:hover,
+#scroll-to-top,
+.slick-dots li.slick-active button,
+.slick-dots li button:hover {
+    background-color: var(--aquila-primary);
+}
+
+.default-btn:hover,
+.menu-btn:hover,
+.dl-btn:hover,
+.submit-btn:hover,
+#scroll-to-top:hover {
+    background-color: var(--aquila-primary-dark);
+}
+
+.default-btn,
+.menu-btn,
+.dl-btn,
+.submit-btn {
+    border-radius: 999px;
+    box-shadow: 0 12px 25px rgba(25, 198, 207, 0.22);
+}
+
+.spinner,
+.service-item .service-icon i,
+.promo-item i,
+.about-promo-item i,
+.work-pro-item .number {
+    color: var(--aquila-primary);
+}
+
+.promo-item,
+.service-item,
+.work-pro-item,
+.testi-item,
+.blog-item,
+.contact-form,
+.aquila-info-card,
+.aquila-case-card,
+.aquila-cta-box,
+.aquila-process-card {
+    border: 1px solid var(--aquila-border);
+    box-shadow: var(--aquila-shadow);
+}
+
+.aquila-hero-slide {
+    position: relative;
+}
+
+.aquila-hero-slide .bg-img {
+    background-image: none !important;
+}
+
+.aquila-hero-slide.hero-one .bg-img {
+    background: linear-gradient(135deg, #0e2336 0%, #124964 55%, var(--aquila-primary) 100%);
+}
+
+.aquila-hero-slide.hero-two .bg-img {
+    background: linear-gradient(135deg, #10202c 0%, #0d8f97 55%, #86e4ea 100%);
+}
+
+.aquila-hero-slide.hero-three .bg-img {
+    background: linear-gradient(135deg, #102f3f 0%, #21506d 50%, #1fc4cd 100%);
+}
+
+.aquila-hero-slide .overlay {
+    background: rgba(7, 19, 28, 0.34);
+}
+
+.aquila-hero-tag,
+.aquila-page-tag {
+    display: inline-block;
+    margin-bottom: 16px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.aquila-page-header {
+    position: relative;
+    height: 340px;
+    background: linear-gradient(135deg, #0f2435 0%, #14546f 52%, var(--aquila-primary) 100%);
+}
+
+.aquila-page-header::before {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(8, 17, 24, 0.15), rgba(8, 17, 24, 0.45));
+    content: "";
+}
+
+.aquila-page-header .container,
+.aquila-page-shell {
+    position: relative;
+    z-index: 1;
+}
+
+.aquila-page-header .page-content h2,
+.aquila-page-header .page-content p {
+    color: #fff;
+}
+
+.aquila-page-shell {
+    background: #fff;
+}
+
+.aquila-section-intro {
+    max-width: 620px;
+    margin-bottom: 35px;
+}
+
+.aquila-section-intro span {
+    color: var(--aquila-primary);
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.aquila-info-card,
+.aquila-case-card,
+.aquila-process-card {
+    height: 100%;
+    padding: 32px 28px;
+    border-radius: 18px;
+    background: #fff;
+}
+
+.aquila-info-card h3,
+.aquila-case-card h3,
+.aquila-process-card h3 {
+    margin-bottom: 12px;
+}
+
+.aquila-info-card p:last-child,
+.aquila-case-card p:last-child,
+.aquila-process-card p:last-child {
+    margin-bottom: 0;
+}
+
+.aquila-icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 62px;
+    height: 62px;
+    margin-bottom: 18px;
+    border-radius: 18px;
+    background: rgba(25, 198, 207, 0.1);
+    color: var(--aquila-primary);
+    font-size: 24px;
+}
+
+.aquila-feature-list li,
+.aquila-contact-list li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 12px;
+}
+
+.aquila-feature-list li::before,
+.aquila-contact-list li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--aquila-primary);
+    content: "\2022";
+}
+
+.aquila-contact-list li:last-child,
+.aquila-feature-list li:last-child {
+    margin-bottom: 0;
+}
+
+.aquila-muted {
+    color: var(--aquila-ink-soft);
+}
+
+.aquila-cta-box {
+    padding: 50px 38px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #10364a 0%, #166b76 55%, #22c8d0 100%);
+    color: #fff;
+}
+
+.aquila-cta-box h2,
+.aquila-cta-box p {
+    color: #fff;
+}
+
+.aquila-cta-box .default-btn {
+    background: #fff;
+    color: var(--aquila-primary-dark);
+    box-shadow: none;
+}
+
+.aquila-cta-box .default-btn:hover {
+    background: #e9ffff;
+}
+
+.aquila-highlight {
+    color: var(--aquila-primary);
+}
+
+.aquila-footer-note {
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.widget-section {
+    background: #0f2130;
+}
+
+.widget-section p,
+.widget-section span,
+.widget-section li a {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.widget-section h4,
+.widget-section .site-brand,
+.widget-section .site-brand-text small {
+    color: #fff;
+}
+
+.widget-section .site-brand-mark {
+    box-shadow: none;
+}
+
+.footer-section {
+    background: #091721;
+}
+
+.footer-section p,
+.footer-section a {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.contact-form .form-control {
+    border: 1px solid rgba(24, 50, 71, 0.12);
+    border-radius: 14px;
+    box-shadow: none;
+}
+
+.contact-form .form-control:focus {
+    border-color: rgba(25, 198, 207, 0.5);
+    box-shadow: 0 0 0 3px rgba(25, 198, 207, 0.12);
+}
+
+.aquila-form-note {
+    margin-top: 18px;
+    color: var(--aquila-ink-soft);
+    font-size: 14px;
+}
+
+.alert {
+    display: none;
+    margin-top: 15px;
+    border-radius: 14px;
+}
+
+.aquila-map {
+    border: 0;
+    width: 100%;
+    height: 380px;
+}
+
+.page-content {
+    position: relative;
+    z-index: 1;
+}
+
+.aquila-spacer-top {
+    margin-top: 30px;
+}
+
+@media (max-width: 991px) {
+    .site-brand {
+        font-size: 18px;
+    }
+
+    .site-brand-mark {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        font-size: 15px;
+    }
+
+    .aquila-page-header {
+        height: 290px;
+    }
+}
+
+@media (max-width: 767px) {
+    .aquila-info-card,
+    .aquila-case-card,
+    .aquila-process-card {
+        padding: 26px 22px;
+    }
+
+    .aquila-cta-box {
+        padding: 36px 24px;
+    }
+}
