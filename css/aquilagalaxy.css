@@ -177,7 +177,7 @@ h6 {
 }
 
 .aquila-hero-slide.hero-one .bg-img {
-    background-image: linear-gradient(rgba(12, 30, 43, 0.46), rgba(12, 30, 43, 0.46)), url("../img/aquilagalaxy/cover_welding.jpg") !important;
+    background-image: linear-gradient(rgba(12, 30, 43, 0.46), rgba(12, 30, 43, 0.46)), url("../img/aquilagalaxy-hero-cover.jpeg") !important;
 }
 
 .aquila-hero-slide.hero-two .bg-img {
@@ -281,7 +281,7 @@ h6 {
 }
 
 .aquila-image-panel.image-content-one {
-    background-image: url("../img/aquilagalaxy/corrosion_control_offshore_platform.jpg");
+    background-image: url("../img/aquilagalaxy/cover_valve_flange.jpg");
 }
 
 .aquila-image-panel.image-content-two {
