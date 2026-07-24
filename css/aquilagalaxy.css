@@ -177,15 +177,15 @@ h6 {
 }
 
 .aquila-hero-slide.hero-one .bg-img {
-    background-image: linear-gradient(rgba(12, 30, 43, 0.46), rgba(12, 30, 43, 0.46)), url("../img/slider-1.jpg") !important;
+    background-image: linear-gradient(rgba(12, 30, 43, 0.46), rgba(12, 30, 43, 0.46)), url("../img/aquilagalaxy/cover_welding.jpg") !important;
 }
 
 .aquila-hero-slide.hero-two .bg-img {
-    background-image: linear-gradient(rgba(10, 35, 44, 0.4), rgba(10, 35, 44, 0.4)), url("../img/slider-2.jpg") !important;
+    background-image: linear-gradient(rgba(10, 35, 44, 0.4), rgba(10, 35, 44, 0.4)), url("../img/aquilagalaxy/cover_pipe_excavation.jpg") !important;
 }
 
 .aquila-hero-slide.hero-three .bg-img {
-    background-image: linear-gradient(rgba(11, 33, 45, 0.42), rgba(11, 33, 45, 0.42)), url("../img/slider-3.jpg") !important;
+    background-image: linear-gradient(rgba(11, 33, 45, 0.42), rgba(11, 33, 45, 0.42)), url("../img/aquilagalaxy/cover_worker_pipe.jpg") !important;
 }
 
 .aquila-hero-slide .bg-img,
@@ -281,19 +281,19 @@ h6 {
 }
 
 .aquila-image-panel.image-content-one {
-    background-image: url("../img/content-1.jpg");
+    background-image: url("../img/aquilagalaxy/corrosion_control_offshore_platform.jpg");
 }
 
 .aquila-image-panel.image-content-two {
-    background-image: url("../img/content-2.jpg");
+    background-image: url("../img/aquilagalaxy/human_capacity_training.jpg");
 }
 
 .aquila-image-panel.image-project-one {
-    background-image: url("../img/project-1.jpg");
+    background-image: url("../img/aquilagalaxy/pipeline_tie_in_welding.jpg");
 }
 
 .aquila-image-panel.image-project-two {
-    background-image: url("../img/project-4.jpg");
+    background-image: url("../img/aquilagalaxy/ologbo_corrosion_control_water_jetting.jpg");
 }
 
 .aquila-image-caption {
