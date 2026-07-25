@@ -4,7 +4,7 @@ from PIL import Image
 
 
 ROOT = Path(r"c:\Users\HP\OneDrive\Documents\Aquilagalaxy Solutions\indico-construction-building-html-template")
-SOURCE = ROOT / "img" / "Aquilagalaxy logo.jpg (1).jpeg"
+SOURCE = ROOT / "img" / "aquilagalaxy-logo.jpeg"
 TARGET = ROOT / "img" / "aquilagalaxy-logo-clean.png"
 
 TURQUOISE = (25, 198, 207, 255)
