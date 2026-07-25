@@ -284,34 +284,52 @@
 <div class="row">
 <div class="col-lg-4 col-sm-6 sm-padding">
 <div class="aquila-project-card wow fadeInUp" data-wow-delay="100ms">
+<a class="venobox" data-vbtype="image" href="img/aquilagalaxy/pipeline_spool_replacement_excavation.jpg" aria-label="Preview Post IP defect repair project photo">
 <img src="img/aquilagalaxy/pipeline_spool_replacement_excavation.jpg" alt="Post IP defect repair project">
+</a>
 <div class="aquila-project-body">
 <span class="aquila-project-category">Pipeline Repair</span>
 <h3>Post IP Defect Repair by Sectional Replacement on 20-inch TRP</h3>
 <p><strong>Location:</strong> Odimodi, Bayelsa State, Nigeria</p>
 <p><strong>Client:</strong> Renaissance Africa Energy Company Limited</p>
+<div style="margin-top:10px;display:flex;gap:15px;flex-wrap:wrap;">
+<a class="aquila-project-preview-link venobox" data-vbtype="image" href="img/aquilagalaxy/pipeline_spool_replacement_excavation.jpg">Preview Photo <i class="arrow_right"></i></a>
+<a href="projects.html" class="aquila-project-preview-link">See All Projects <i class="arrow_right"></i></a>
+</div>
 </div>
 </div>
 </div>
 <div class="col-lg-4 col-sm-6 sm-padding">
 <div class="aquila-project-card wow fadeInUp" data-wow-delay="250ms">
+<a class="venobox" data-vbtype="image" href="img/aquilagalaxy/ologbo_corrosion_control_water_jetting.jpg" aria-label="Preview Corrosion control project photo">
 <img src="img/aquilagalaxy/ologbo_corrosion_control_water_jetting.jpg" alt="Corrosion control project">
+</a>
 <div class="aquila-project-body">
 <span class="aquila-project-category">Corrosion Control</span>
 <h3>Corrosion Control by Water Jetting and Spray Painting</h3>
 <p><strong>Location:</strong> Ologbo Gas Plant, Edo State, Nigeria</p>
 <p><strong>Client:</strong> NPDC</p>
+<div style="margin-top:10px;display:flex;gap:15px;flex-wrap:wrap;">
+<a class="aquila-project-preview-link venobox" data-vbtype="image" href="img/aquilagalaxy/ologbo_corrosion_control_water_jetting.jpg">Preview Photo <i class="arrow_right"></i></a>
+<a href="projects.html" class="aquila-project-preview-link">See All Projects <i class="arrow_right"></i></a>
+</div>
 </div>
 </div>
 </div>
 <div class="col-lg-4 col-sm-6 sm-padding">
 <div class="aquila-project-card wow fadeInUp" data-wow-delay="400ms">
+<a class="venobox" data-vbtype="image" href="img/aquilagalaxy/real_estate_construction.jpg" aria-label="Preview Real estate construction project photo">
 <img src="img/aquilagalaxy/real_estate_construction.jpg" alt="Real estate construction project">
+</a>
 <div class="aquila-project-body">
 <span class="aquila-project-category">Construction</span>
 <h3>Real Estate Multi-Building Construction</h3>
 <p><strong>Location:</strong> Effurun, Warri, and Udu, Delta State, Nigeria</p>
 <p><strong>Scope:</strong> Residential estate buildings and duplex developments</p>
+<div style="margin-top:10px;display:flex;gap:15px;flex-wrap:wrap;">
+<a class="aquila-project-preview-link venobox" data-vbtype="image" href="img/aquilagalaxy/real_estate_construction.jpg">Preview Photo <i class="arrow_right"></i></a>
+<a href="projects.html" class="aquila-project-preview-link">See All Projects <i class="arrow_right"></i></a>
+</div>
 </div>
 </div>
 </div>
@@ -450,6 +468,14 @@
 <script src="js/aquilagalaxy.js"></script>
 <script>
 $(document).ready(function () {
+    if ($.fn.venobox) {
+        $('.venobox').venobox({
+            bgcolor: '#0f2130',
+            border: '6px',
+            numeratio: true,
+            infinigall: true
+        });
+    }
     if ($.fn.owlCarousel && $('#sponsor-carousel').length) {
         $('#sponsor-carousel').owlCarousel({
             loop: true,
