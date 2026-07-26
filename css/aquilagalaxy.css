@@ -623,6 +623,30 @@ h6 {
     margin-top: 40px;
 }
 
+.sponsor-section .sponsor-item {
+    padding: 20px 15px;
+    background: #fff;
+    border-radius: 12px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 140px;
+    box-shadow: var(--aquila-shadow);
+}
+
+.sponsor-section .sponsor-item img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.sponsor-section {
+    padding: 20px 0 40px;
+}
+
 @media (max-width: 991px) {
     .site-brand {
         font-size: 18px;
