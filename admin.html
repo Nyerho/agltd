@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aquilagalaxy Solutions — Admin Dashboard</title>
+<link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/fontawesome.min.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div id="admin-login" class="admin-login-wrap">
+<div class="container">
+<div class="row justify-content-center">
+<div class="col-md-6 col-lg-4">
+<div class="admin-login-card">
+<div class="admin-login-header text-center">
+<img src="img/aquilagalaxy-logo-clean.png" alt="Aquilagalaxy logo" class="admin-login-logo">
+<h2 class="mt-3">Admin Access</h2>
+<p>Enter your admin password to continue.</p>
+</div>
+<form id="adminLoginForm" class="mt-4">
+<div class="form-group">
+<label for="adminPassword">Password</label>
+<div class="input-group">
+<input type="password" id="adminPassword" class="form-control" placeholder="Enter admin password" required>
+<div class="input-group-append">
+<button type="button" class="btn btn-outline-secondary" id="toggleAdminPassword">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+</div>
+<small id="loginError" class="form-text text-danger mt-2" style="display:none;">Incorrect password. Try again.</small>
+</div>
+<button type="submit" class="btn btn-primary btn-block btn-lg mt-3">
+<i class="fas fa-unlock-alt"></i> Log In
+</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="admin-app" style="display:none;">
+<nav class="navbar navbar-dark admin-topbar">
+<a class="navbar-brand d-flex align-items-center" href="admin.html">
+<img src="img/aquilagalaxy-logo-clean.png" alt="Aquilagalaxy" height="40">
+<span class="ml-2 font-weight-bold">Admin Dashboard</span>
+</a>
+<div class="d-flex align-items-center">
+<a href="index.html" class="btn btn-outline-light btn-sm mr-3" target="_blank">
+<i class="fas fa-external-link-alt"></i> View Site
+</a>
+<button type="button" id="logoutBtn" class="btn btn-danger btn-sm">
+<i class="fas fa-sign-out-alt"></i> Log Out
+</button>
+</div>
+</nav>
+
+<div class="container-fluid">
+<div class="row">
+<aside class="col-md-3 col-lg-2 p-0 admin-sidebar">
+<div class="list-group list-group-flush">
+<a href="#dashboard" class="list-group-item list-group-item-action admin-nav active" data-section="dashboard">
+<i class="fas fa-tachometer-alt"></i> Dashboard
+</a>
+<a href="#home" class="list-group-item list-group-item-action admin-nav" data-section="home">
+<i class="fas fa-home"></i> Home Page
+</a>
+<a href="#about" class="list-group-item list-group-item-action admin-nav" data-section="about">
+<i class="fas fa-info-circle"></i> About Page
+</a>
+<a href="#services" class="list-group-item list-group-item-action admin-nav" data-section="services">
+<i class="fas fa-cogs"></i> Services Page
+</a>
+<a href="#projects" class="list-group-item list-group-item-action admin-nav" data-section="projects">
+<i class="fas fa-project-diagram"></i> Projects Page
+</a>
+<a href="#contact" class="list-group-item list-group-item-action admin-nav" data-section="contact">
+<i class="fas fa-envelope"></i> Contact &amp; Footer
+</a>
+<a href="#partners" class="list-group-item list-group-item-action admin-nav" data-section="partners">
+<i class="fas fa-handshake"></i> Partners
+</a>
+<a href="#images" class="list-group-item list-group-item-action admin-nav" data-section="images">
+<i class="fas fa-images"></i> Images &amp; Media
+</a>
+</div>
+</aside>
+
+<main class="col-md-9 col-lg-10 ml-sm-auto px-4 py-4 admin-main">
+<section id="dashboard-section" class="admin-section active">
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+<h1 class="h2"><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+<div class="btn-toolbar mb-2 mb-md-0">
+<button id="publishAllBtn" class="btn btn-sm btn-success mr-2">
+<i class="fas fa-cloud-upload-alt"></i> Publish All to Live Site
+</button>
+<button id="fetchLiveBtn" class="btn btn-sm btn-outline-info mr-2">
+<i class="fas fa-cloud-download-alt"></i> Pull Live Content
+</button>
+<button id="exportBtn" class="btn btn-sm btn-outline-secondary mr-2">
+<i class="fas fa-download"></i> Export Content
+</button>
+<label class="btn btn-sm btn-outline-secondary mb-0">
+<i class="fas fa-upload"></i> Import Content
+<input type="file" id="importInput" accept="application/json" style="display:none;">
+</label>
+</div>
+</div>
+<div id="publishStatus" class="alert alert-light border mb-3" role="alert" style="display:none;">
+<i class="fas fa-info-circle"></i> <span id="publishStatusText">Ready.</span>
+</div>
+<div class="row">
+<div class="col-md-4">
+<div class="card admin-stat-card bg-primary text-white">
+<div class="card-body">
+<div class="d-flex justify-content-between">
+<div>
+<h5 class="card-title">Pages</h5>
+<h2 class="display-4">5</h2>
+</div>
+<i class="fas fa-file-alt fa-3x opacity-70"></i>
+</div>
+<small class="text-white-50">Home, About, Services, Projects, Contact</small>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="card admin-stat-card bg-success text-white">
+<div class="card-body">
+<div class="d-flex justify-content-between">
+<div>
+<h5 class="card-title">Projects</h5>
+<h2 id="stat-projects" class="display-4">9</h2>
+</div>
+<i class="fas fa-project-diagram fa-3x opacity-70"></i>
+</div>
+<small class="text-white-50">Case studies &amp; portfolio</small>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="card admin-stat-card bg-info text-white">
+<div class="card-body">
+<div class="d-flex justify-content-between">
+<div>
+<h5 class="card-title">Services</h5>
+<h2 id="stat-services" class="display-4">6</h2>
+</div>
+<i class="fas fa-cogs fa-3x opacity-70"></i>
+</div>
+<small class="text-white-50">Core service categories</small>
+</div>
+</div>
+</div>
+</div>
+<div class="card mt-4">
+<div class="card-header"><h4>Getting Started</h4></div>
+<div class="card-body">
+<p>Use the sidebar to navigate to each page section. Changes are saved locally to this browser immediately, then click <strong>Publish to Live Site</strong> below any section to push them globally.</p>
+<p>To move content across devices without publishing, use <strong>Export Content</strong> and <strong>Import Content</strong> above.</p>
+<div class="alert alert-info mb-0">
+<strong>Live sync ready:</strong> This panel is connected to the site's Firestore backend (project <code>agltd-5f431</code>). When you click <i>Publish to Live Site</i> the update goes live to every visitor worldwide. Firebase hosting + Firestore are free for this traffic level.
+</div>
+</div>
+</div>
+</section>
+
+<section id="home-section" class="admin-section">
+<div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
+<h1 class="h2"><i class="fas fa-home"></i> Home Page Content</h1>
+</div>
+<div class="card mb-4">
+<div class="card-header">Hero / Slider Content</div>
+<div class="card-body">
+<div class="form-group"><label for="home_hero_tag">Hero 1 Tagline</label><input type="text" id="home_hero_tag" class="form-control" data-field="home_hero_tag"></div>
+<div class="form-row">
+<div class="form-group col-md-6"><label for="home_hero_headline_1">Hero 1 Headline Line 1</label><input type="text" id="home_hero_headline_1" class="form-control" data-field="home_hero_headline_1"></div>
+<div class="form-group col-md-6"><label for="home_hero_headline_2">Hero 1 Headline Line 2</label><input type="text" id="home_hero_headline_2" class="form-control" data-field="home_hero_headline_2"></div>
+</div>
+<div class="form-group"><label for="home_hero_sub">Hero 1 Sub-title</label><input type="text" id="home_hero_sub" class="form-control" data-field="home_hero_sub"></div>
+</div>
+</div>
+
+<div class="card mb-4">
+<div class="card-header">Services Intro</div>
+<div class="card-body">
+<div class="form-group"><label for="home_services_span">Section Eyebrow</label><input type="text" id="home_services_span" class="form-control" data-field="home_services_span"></div>
+<div class="form-group"><label for="home_services_title">Section Title</label><input type="text" id="home_services_title" class="form-control" data-field="home_services_title"></div>
+<div class="form-group"><label for="home_services_intro">Intro Paragraph</label><textarea id="home_services_intro" rows="3" class="form-control" data-field="home_services_intro"></textarea></div>
+<div id="home_services_cards" class="mt-4"></div>
+<button type="button" id="addServiceCard" class="btn btn-sm btn-secondary mt-3"><i class="fas fa-plus"></i> Add Service Card</button>
+</div>
+</div>
+
+<div class="card mb-4">
+<div class="card-header">Who We Are Section</div>
+<div class="card-body">
+<div class="form-row">
+<div class="form-group col-md-6"><label for="home_whoweare_title">Section Title</label><input type="text" id="home_whoweare_title" class="form-control" data-field="home_whoweare_title"></div>
+<div class="form-group col-md-6"><label for="home_whoweare_span">Eyebrow</label><input type="text" id="home_whoweare_span" class="form-control" data-field="home_whoweare_span"></div>
+</div>
+<div class="form-group"><label for="home_whoweare_img">Section Image URL (relative or absolute)</label><input type="text" id="home_whoweare_img" class="form-control" data-field="home_whoweare_img"></div>
+<div class="form-group"><label for="home_whoweare_p1">Paragraph 1</label><textarea id="home_whoweare_p1" rows="3" class="form-control" data-field="home_whoweare_p1"></textarea></div>
+<div class="form-group"><label for="home_whoweare_p2">Paragraph 2</label><textarea id="home_whoweare_p2" rows="3" class="form-control" data-field="home_whoweare_p2"></textarea></div>
+</div>
+</div>
+
+<div class="card mb-4">
+<div class="card-header">Recent Projects Preview</div>
+<div class="card-body">
+<div class="form-row">
+<div class="form-group col-md-6"><label for="home_projects_span">Eyebrow</label><input type="text" id="home_projects_span" class="form-control" data-field="home_projects_span"></div>
+<div class="form-group col-md-6"><label for="home_projects_title">Section Title</label><input type="text" id="home_projects_title" class="form-control" data-field="home_projects_title"></div>
+</div>
+<div class="form-group"><label for="home_projects_intro">Intro Text</label><textarea id="home_projects_intro" rows="2" class="form-control" data-field="home_projects_intro"></textarea></div>
+</div>
+</div>
+
+<div class="card mb-4">
+<div class="card-header">Our Partners Section</div>
+<div class="card-body">
+<div class="form-row">
+<div class="form-group col-md-6"><label for="home_partners_span">Eyebrow</label><input type="text" id="home_partners_span" class="form-control" data-field="home_partners_span"></div>
+<div class="form-group col-md-6"><label for="home_partners_title">Section Title</label><input type="text" id="home_partners_title" class="form-control" data-field="home_partners_title"></div>
+</div>
+<div class="form-group"><label for="home_partners_intro">Intro Text</label><textarea id="home_partners_intro" rows="2" class="form-control" data-field="home_partners_intro"></textarea></div>
+</div>
+</div>
+
+<button type="button" class="btn btn-primary btn-save-section" data-section="home"><i class="fas fa-save"></i> Save Home Changes</button> <button type="button" class="btn btn-success btn-publish-section ml-2" data-section="home"><i class="fas fa-cloud-upload-alt"></i> Publish to Live Site</button>
+</section>
+
+<section id="about-section" class="admin-section">
+<div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
+<h1 class="h2"><i class="fas fa-info-circle"></i> About Page Content</h1>
+</div>
+<div class="card mb-4">
+<div class="card-header">Page Header</div>
+<div class="card-body">
+<div class="form-group"><label for="about_title">Page Title</label><input type="text" id="about_title" class="form-control" data-field="about_title"></div>
+<div class="form-group"><label for="about_sub">Page Subtitle</label><textarea id="about_sub" rows="2" class="form-control" data-field="about_sub"></textarea></div>
+</div>
+</div>
+<div class="card mb-4">
+<div class="card-header">Who We Are</div>
+<div class="card-body">
+<div class="form-group"><label for="about_whoweare_title">Section Title</label><input type="text" id="about_whoweare_title" class="form-control" data-field="about_whoweare_title"></div>
+<div class="form-group"><label for="about_whoweare_body">Body Paragraphs (separate by blank lines)</label><textarea id="about_whoweare_body" rows="8" class="form-control" data-field="about_whoweare_body"></textarea></div>
+</div>
+</div>
+<div class="card mb-4">
+<div class="card-header">Mission, Vision, Values</div>
+<div class="card-body">
+<div class="form-group"><label for="about_mission">Mission Statement</label><textarea id="about_mission" rows="3" class="form-control" data-field="about_mission"></textarea></div>
+<div class="form-group"><label for="about_vision">Vision Statement</label><textarea id="about_vision" rows="3" class="form-control" data-field="about_vision"></textarea></div>
+<div class="form-group"><label for="about_values">Values</label><input type="text" id="about_values" class="form-control" data-field="about_values"></div>
+<div class="form-group"><label for="about_responsibility">Corporate Responsibility</label><textarea id="about_responsibility" rows="3" class="form-control" data-field="about_responsibility"></textarea></div>
+</div>
+</div>
+<div class="card mb-4">
+<div class="card-header">Strategic Objectives</div>
+<div class="card-body">
+<div id="about_objectives_list" class="mb-3"></div>
+<button type="button" id="addObjective" class="btn btn-sm btn-secondary"><i class="fas fa-plus"></i> Add Objective</button>
+</div>
+</div>
+<button type="button" class="btn btn-primary btn-save-section" data-section="about"><i class="fas fa-save"></i> Save About Changes</button> <button type="button" class="btn btn-success btn-publish-section ml-2" data-section="about"><i class="fas fa-cloud-upload-alt"></i> Publish to Live Site</button>
+</section>
+
+<section id="services-section" class="admin-section">
+<div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
+<h1 class="h2"><i class="fas fa-cogs"></i> Services Page Content</h1>
+</div>
+<div class="card mb-4">
+<div class="card-header">Page Header</div>
+<div class="card-body">
+<div class="form-group"><label for="services_title">Page Title</label><input type="text" id="services_title" class="form-control" data-field="services_title"></div>
+<div class="form-group"><label for="services_sub">Page Subtitle</label><textarea id="services_sub" rows="2" class="form-control" data-field="services_sub"></textarea></div>
+<div class="form-group"><label for="services_intro">Intro Paragraph</label><textarea id="services_intro" rows="3" class="form-control" data-field="services_intro"></textarea></div>
+</div>
+</div>
+<div class="card mb-4">
+<div class="card-header">Service Categories</div>
+<div class="card-body">
+<div id="services_cards_list"></div>
+<button type="button" id="addServiceCard2" class="btn btn-sm btn-secondary mt-3"><i class="fas fa-plus"></i> Add Service Category</button>
+</div>
+</div>
+<div class="card mb-4">
+<div class="card-header">Human Capacity Development</div>
+<div class="card-body">
+<div class="form-group"><label for="services_training_title">Section Title</label><input type="text" id="services_training_title" class="form-control" data-field="services_training_title"></div>
+<div class="form-group"><label for="services_training_body">Body</label><textarea id="services_training_body" rows="4" class="form-control" data-field="services_training_body"></textarea></div>
+<div id="services_training_list"></div>
+<button type="button" id="addTrainingTopic" class="btn btn-sm btn-secondary mt-3"><i class="fas fa-plus"></i> Add Training Topic</button>
+</div>
+</div>
+<button type="button" class="btn btn-primary btn-save-section" data-section="services"><i class="fas fa-save"></i> Save Services Changes</button> <button type="button" class="btn btn-success btn-publish-section ml-2" data-section="services"><i class="fas fa-cloud-upload-alt"></i> Publish to Live Site</button>
+</section>
+
+<section id="projects-section" class="admin-section">
+<div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
+<h1 class="h2"><i class="fas fa-project-diagram"></i> Projects / Case Studies</h1>
+</div>
+<div class="card mb-4">
+<div class="card-header">Page Header &amp; Intro</div>
+<div class="card-body">
+<div class="form-group"><label for="projects_title">Page Title</label><input type="text" id="projects_title" class="form-control" data-field="projects_title"></div>
+<div class="form-group"><label for="projects_sub">Page Subtitle</label><textarea id="projects_sub" rows="3" class="form-control" data-field="projects_sub"></textarea></div>
+</div>
+</div>
+<div class="card mb-4">
+<div class="card-header d-flex justify-content-between align-items-center">
+<span>Projects List</span>
+<button type="button" id="addProject" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> Add Project</button>
+</div>
+<div class="card-body">
+<div id="projects_list"></div>
+</div>
+</div>
+<button type="button" class="btn btn-primary btn-save-section" data-section="projects"><i class="fas fa-save"></i> Save Projects Changes</button> <button type="button" class="btn btn-success btn-publish-section ml-2" data-section="projects"><i class="fas fa-cloud-upload-alt"></i> Publish to Live Site</button>
+</section>
+
+<section id="contact-section" class="admin-section">
+<div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
+<h1 class="h2"><i class="fas fa-envelope"></i> Contact &amp; Footer Info</h1>
+</div>
+<div class="card mb-4">
+<div class="card-header">Company / Contact Details</div>
+<div class="card-body">
+<div class="form-group"><label for="contact_company">Company Name</label><input type="text" id="contact_company" class="form-control" data-field="contact_company"></div>
+<div class="form-group"><label for="contact_rc">RC Number</label><input type="text" id="contact_rc" class="form-control" data-field="contact_rc"></div>
+<div class="form-group"><label for="contact_website">Website</label><input type="text" id="contact_website" class="form-control" data-field="contact_website"></div>
+<div class="form-group"><label for="contact_address">Address</label><textarea id="contact_address" rows="2" class="form-control" data-field="contact_address"></textarea></div>
+<div class="form-row">
+<div class="form-group col-md-6"><label for="contact_email1">Email 1</label><input type="email" id="contact_email1" class="form-control" data-field="contact_email1"></div>
+<div class="form-group col-md-6"><label for="contact_email2">Email 2</label><input type="email" id="contact_email2" class="form-control" data-field="contact_email2"></div>
+</div>
+<div class="form-row">
+<div class="form-group col-md-6"><label for="contact_phone1">Phone 1</label><input type="text" id="contact_phone1" class="form-control" data-field="contact_phone1"></div>
+<div class="form-group col-md-6"><label for="contact_phone2">Phone 2</label><input type="text" id="contact_phone2" class="form-control" data-field="contact_phone2"></div>
+</div>
+<div class="form-group"><label for="contact_copyright">Footer Copyright Text</label><input type="text" id="contact_copyright" class="form-control" data-field="contact_copyright"></div>
+</div>
+</div>
+<div class="card mb-4">
+<div class="card-header">Contact Page Copy</div>
+<div class="card-body">
+<div class="form-group"><label for="contact_hero_title">Page Title</label><input type="text" id="contact_hero_title" class="form-control" data-field="contact_hero_title"></div>
+<div class="form-group"><label for="contact_hero_sub">Page Subtitle</label><textarea id="contact_hero_sub" rows="2" class="form-control" data-field="contact_hero_sub"></textarea></div>
+</div>
+</div>
+<button type="button" class="btn btn-primary btn-save-section" data-section="contact"><i class="fas fa-save"></i> Save Contact &amp; Footer Changes</button> <button type="button" class="btn btn-success btn-publish-section ml-2" data-section="contact"><i class="fas fa-cloud-upload-alt"></i> Publish to Live Site</button>
+</section>
+
+<section id="partners-section" class="admin-section">
+<div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
+<h1 class="h2"><i class="fas fa-handshake"></i> Partners / Clients</h1>
+</div>
+<div class="card mb-4">
+<div class="card-header">Partner Slideshow Images</div>
+<div class="card-body">
+<p class="text-muted">Upload or link logo images. Tip: You can use the <code>pRTNERLOGONEW.png</code> file, or add individual logos.</p>
+<div id="partners_list"></div>
+<button type="button" id="addPartner" class="btn btn-sm btn-secondary mt-3"><i class="fas fa-plus"></i> Add Partner Logo</button>
+</div>
+</div>
+<button type="button" class="btn btn-primary btn-save-section" data-section="partners"><i class="fas fa-save"></i> Save Partners</button> <button type="button" class="btn btn-success btn-publish-section ml-2" data-section="partners"><i class="fas fa-cloud-upload-alt"></i> Publish to Live Site</button>
+</section>
+
+<section id="images-section" class="admin-section">
+<div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
+<h1 class="h2"><i class="fas fa-images"></i> Images &amp; Media References</h1>
+</div>
+<div class="card mb-4">
+<div class="card-header">Key Site Images (hero panels, background images)</div>
+<div class="card-body">
+<div class="form-group"><label for="img_hero1">Hero 1 Background (hero-one)</label><input type="text" id="img_hero1" class="form-control" data-field="img_hero1"></div>
+<div class="form-group"><label for="img_hero2">Hero 2 Background (hero-two)</label><input type="text" id="img_hero2" class="form-control" data-field="img_hero2"></div>
+<div class="form-group"><label for="img_hero3">Hero 3 Background (hero-three)</label><input type="text" id="img_hero3" class="form-control" data-field="img_hero3"></div>
+<div class="form-group"><label for="img_mission">Mission / Vision Image Panel (image-content-one)</label><input type="text" id="img_mission" class="form-control" data-field="img_mission"></div>
+<div class="form-group"><label for="img_training">Human Capacity Image Panel (image-content-two)</label><input type="text" id="img_training" class="form-control" data-field="img_training"></div>
+<div class="form-group"><label for="img_about_hero">About Page Header Background</label><input type="text" id="img_about_hero" class="form-control" data-field="img_about_hero"></div>
+<div class="form-group"><label for="img_services_hero">Services Page Header Background</label><input type="text" id="img_services_hero" class="form-control" data-field="img_services_hero"></div>
+<div class="form-group"><label for="img_projects_hero">Projects Page Header Background</label><input type="text" id="img_projects_hero" class="form-control" data-field="img_projects_hero"></div>
+<div class="form-group"><label for="img_contact_hero">Contact Page Header Background</label><input type="text" id="img_contact_hero" class="form-control" data-field="img_contact_hero"></div>
+</div>
+</div>
+<div class="alert alert-info">
+For image uploads to persist across sessions, connect this panel to a backend storage (e.g. Firebase Storage, AWS S3). For now, paste in relative paths from the <code>img/</code> folder.
+</div>
+<button type="button" class="btn btn-primary btn-save-section" data-section="images"><i class="fas fa-save"></i> Save Image Settings</button> <button type="button" class="btn btn-success btn-publish-section ml-2" data-section="images"><i class="fas fa-cloud-upload-alt"></i> Publish to Live Site</button>
+</section>
+
+</main>
+</div>
+</div>
+</div>
+
+<div id="toast" class="admin-toast" style="display:none;"></div>
+
+<script src="js/vendor/jquery-1.12.4.min.js"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+<script type="module" src="js/firebase-init.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 $(document).ready(function () {
     const STORAGE_KEY = "aquilagalaxy_site_content_v1";
+    const FIRESTORE_SYNC_KEY = "aquilagalaxy_firestore_last_sync_v1";
     const defaults = {
         home_hero_tag: "Corporate Profile",
         home_hero_headline_1: "Engineering. Construction.",
@@ -132,6 +133,44 @@ $(document).ready(function () {
     applyContactFooter();
     applyImageOverrides();
 
+    async function maybeSyncFromFirestore() {
+        if (!window.aquilagalaxyFirebase || !window.aquilagalaxyFirebase.app) return false;
+        try {
+            const [{ getFirestore, doc, getDoc, onSnapshot }] = await Promise.all([
+                import("https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js")
+            ]);
+            const db = getFirestore(window.aquilagalaxyFirebase.app);
+            const ref = doc(db, "siteContent", "v1");
+            const snap = await getDoc(ref);
+            if (snap.exists()) {
+                const live = snap.data();
+                const newContent = Object.assign({}, defaults, live);
+                delete newContent.publishedAt;
+                delete newContent.publishedBy;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(newContent));
+                localStorage.setItem(FIRESTORE_SYNC_KEY, String(Date.now()));
+                siteContent = newContent;
+                try {
+                    onSnapshot(ref, (s) => {
+                        if (!s.exists()) return;
+                        const l = s.data();
+                        const merged = Object.assign({}, defaults, l);
+                        delete merged.publishedAt;
+                        delete merged.publishedBy;
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+                        localStorage.setItem(FIRESTORE_SYNC_KEY, String(Date.now()));
+                        if (!window.location.pathname.toLowerCase().includes("admin.html")) {
+                            setTimeout(() => window.location.reload(), 800);
+                        }
+                    });
+                } catch (_) {}
+                return true;
+            }
+        } catch (_) {}
+        return false;
+    }
+
+    function renderAllContent() {
     const path = (window.location.pathname.split("/").pop() || "index.html").toLowerCase();
 
     if (path === "index.html" || path === "") {
@@ -307,4 +346,14 @@ ${stagesHtml}
 <a href="admin.html" class="admin-padlock" title="Admin Panel" aria-label="Admin Panel">
 <i class="fas fa-lock"></i>
 </a>`);
+    }
+
+    renderAllContent();
+    maybeSyncFromFirestore().then((updated) => {
+        if (updated) {
+            applyContactFooter();
+            applyImageOverrides();
+            renderAllContent();
+        }
+    }).catch(() => {});
 });
