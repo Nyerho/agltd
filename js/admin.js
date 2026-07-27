@@ -653,4 +653,45 @@ $(document).ready(function () {
             }
         } catch (_) {}
     });
+
+    function renderImagePreview(inputId) {
+        const $input = $("#" + inputId);
+        const $wrap = $(`.agl-img-preview[data-preview-for="${inputId}"]`);
+        if (!$input.length || !$wrap.length) return;
+        const val = String($input.val() || "").trim();
+        if (!val) {
+            $wrap.removeClass("agl-img-preview--broken agl-img-preview--empty").addClass("agl-img-preview--empty").html("<i class='fas fa-image mr-2'></i> No image path set — hero will use its default background.");
+            return;
+        }
+        $wrap.removeClass("agl-img-preview--broken agl-img-preview--empty").html("");
+        const $img = $("<img>").attr("alt", "Preview of " + inputId).on("load", function () {
+            const fmt = (val.match(/\.([a-z0-9]+)(?:\?|#|$)/i) || [])[1];
+            const kb = "?";
+            $wrap.append(`<div class="agl-img-preview-meta"><div class="text-success"><i class="fas fa-check-circle"></i> Image loads OK${fmt ? " · " + fmt.toUpperCase() + " format" : ""}</div><div class="text-muted" style="font-size:12px;">${val}</div></div>`);
+        }).on("error", function () {
+            $wrap.addClass("agl-img-preview--broken").html(`
+                <img src="" alt="broken preview" style="opacity:0.12;background:linear-gradient(135deg,#fbe1e8,#fff3d1)">
+                <div class="agl-img-preview-meta">
+                    <div><i class="fas fa-exclamation-triangle"></i> <strong>Can't load this image.</strong> The hero background will appear empty on the site.</div>
+                    <div style="font-size:12px;margin-top:6px;">Check for typos, confirm the file exists at the path below, and that it's been deployed/pushed to the live server:</div>
+                    <div style="font-family:Menlo,Consolas,monospace;font-size:12px;margin-top:4px;">${escapeHtml(val)}</div>
+                </div>
+            `);
+        });
+        $img.attr("src", val);
+        $wrap.prepend($img);
+    }
+
+    function setupAllImagePreviews() {
+        const ids = ["img_hero1", "img_hero2", "img_hero3",
+                     "img_mission", "img_training",
+                     "img_about_hero", "img_services_hero",
+                     "img_projects_hero", "img_contact_hero"];
+        ids.forEach(id => {
+            renderImagePreview(id);
+            $("#" + id).on("input blur change", () => renderImagePreview(id));
+        });
+    }
+
+    setupAllImagePreviews();
 });

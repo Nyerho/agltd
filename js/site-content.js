@@ -115,16 +115,54 @@ $(document).ready(function () {
     function applyImageOverrides() {
         const styleId = "agl-image-overrides";
         if ($("#" + styleId).length) $("#" + styleId).remove();
+        const cssEscape = (typeof CSS !== "undefined" && typeof CSS.escape === "function")
+            ? CSS.escape.bind(CSS)
+            : function (s) { return String(s).replace(/([^\w\-./:?=&%#@~+])/g, "\\$1"); };
+        const bgUrl = (raw) => {
+            if (!raw) return "";
+            const u = String(raw).trim();
+            return u ? `url('${u.replace(/'/g, "%27")}')` : "";
+        };
+        const tint = (top, bot, imgStr) => imgStr
+            ? `linear-gradient(${top}, ${bot}), ${imgStr} !important`
+            : "";
         let css = "";
-        if (siteContent.img_hero1) css += `.aquila-hero-slide.hero-one .bg-img{ background-image: url('${siteContent.img_hero1}') !important; }`;
-        if (siteContent.img_hero2) css += `.aquila-hero-slide.hero-two .bg-img{ background-image: url('${siteContent.img_hero2}') !important; }`;
-        if (siteContent.img_hero3) css += `.aquila-hero-slide.hero-three .bg-img{ background-image: url('${siteContent.img_hero3}') !important; }`;
-        if (siteContent.img_mission) css += `.image-content-one{ background-image: url('${siteContent.img_mission}') !important; }`;
-        if (siteContent.img_training) css += `.image-content-two{ background-image: url('${siteContent.img_training}') !important; }`;
-        if (siteContent.img_about_hero) css += `.agl-page-header-about{ background-image: url('${siteContent.img_about_hero}') !important; }`;
-        if (siteContent.img_services_hero) css += `.agl-page-header-services{ background-image: url('${siteContent.img_services_hero}') !important; }`;
-        if (siteContent.img_projects_hero) css += `.agl-page-header-projects{ background-image: url('${siteContent.img_projects_hero}') !important; }`;
-        if (siteContent.img_contact_hero) css += `.agl-page-header-contact{ background-image: url('${siteContent.img_contact_hero}') !important; }`;
+        if (siteContent.img_hero1) {
+            const imgStr = bgUrl(siteContent.img_hero1);
+            css += `body .aquila-hero-slide.hero-one .bg-img, body .aquila-slider .aquila-hero-slide.hero-one > .bg-img { background-image: ${tint("rgba(12, 30, 43, 0.46)","rgba(12, 30, 43, 0.46)", imgStr)}; background-position: center center !important; background-repeat: no-repeat !important; background-size: cover !important; }`;
+        }
+        if (siteContent.img_hero2) {
+            const imgStr = bgUrl(siteContent.img_hero2);
+            css += `body .aquila-hero-slide.hero-two .bg-img, body .aquila-slider .aquila-hero-slide.hero-two > .bg-img { background-image: ${tint("rgba(10, 35, 44, 0.4)","rgba(10, 35, 44, 0.4)", imgStr)}; background-position: center center !important; background-repeat: no-repeat !important; background-size: cover !important; }`;
+        }
+        if (siteContent.img_hero3) {
+            const imgStr = bgUrl(siteContent.img_hero3);
+            css += `body .aquila-hero-slide.hero-three .bg-img, body .aquila-slider .aquila-hero-slide.hero-three > .bg-img { background-image: ${tint("rgba(11, 33, 45, 0.42)","rgba(11, 33, 45, 0.42)", imgStr)}; background-position: center center !important; background-repeat: no-repeat !important; background-size: cover !important; }`;
+        }
+        if (siteContent.img_mission) {
+            const imgStr = bgUrl(siteContent.img_mission);
+            if (imgStr) css += `body .image-content-one { background-image: ${imgStr} !important; background-position: center center !important; background-repeat: no-repeat !important; background-size: cover !important; }`;
+        }
+        if (siteContent.img_training) {
+            const imgStr = bgUrl(siteContent.img_training);
+            if (imgStr) css += `body .image-content-two { background-image: ${imgStr} !important; background-position: center center !important; background-repeat: no-repeat !important; background-size: cover !important; }`;
+        }
+        if (siteContent.img_about_hero) {
+            const imgStr = bgUrl(siteContent.img_about_hero);
+            if (imgStr) css += `body .agl-page-header-about, body section.agl-page-header-about { background-image: ${tint("rgba(10, 28, 40, 0.55)","rgba(10, 28, 40, 0.65)", imgStr)}; background-position: center center !important; background-repeat: no-repeat !important; background-size: cover !important; }`;
+        }
+        if (siteContent.img_services_hero) {
+            const imgStr = bgUrl(siteContent.img_services_hero);
+            if (imgStr) css += `body .agl-page-header-services, body section.agl-page-header-services { background-image: ${tint("rgba(10, 28, 40, 0.55)","rgba(10, 28, 40, 0.65)", imgStr)}; background-position: center center !important; background-repeat: no-repeat !important; background-size: cover !important; }`;
+        }
+        if (siteContent.img_projects_hero) {
+            const imgStr = bgUrl(siteContent.img_projects_hero);
+            if (imgStr) css += `body .agl-page-header-projects, body section.agl-page-header-projects { background-image: ${tint("rgba(10, 28, 40, 0.55)","rgba(10, 28, 40, 0.65)", imgStr)}; background-position: center center !important; background-repeat: no-repeat !important; background-size: cover !important; }`;
+        }
+        if (siteContent.img_contact_hero) {
+            const imgStr = bgUrl(siteContent.img_contact_hero);
+            if (imgStr) css += `body .agl-page-header-contact, body section.agl-page-header-contact { background-image: ${tint("rgba(10, 28, 40, 0.55)","rgba(10, 28, 40, 0.65)", imgStr)}; background-position: center center !important; background-repeat: no-repeat !important; background-size: cover !important; }`;
+        }
         if (css) {
             $("<style>").attr("id", styleId).html(css).appendTo("head");
         }

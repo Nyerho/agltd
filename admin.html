@@ -379,19 +379,58 @@
 <div class="card mb-4">
 <div class="card-header">Key Site Images (hero panels, background images)</div>
 <div class="card-body">
-<div class="form-group"><label for="img_hero1">Hero 1 Background (hero-one)</label><input type="text" id="img_hero1" class="form-control" data-field="img_hero1"></div>
-<div class="form-group"><label for="img_hero2">Hero 2 Background (hero-two)</label><input type="text" id="img_hero2" class="form-control" data-field="img_hero2"></div>
-<div class="form-group"><label for="img_hero3">Hero 3 Background (hero-three)</label><input type="text" id="img_hero3" class="form-control" data-field="img_hero3"></div>
-<div class="form-group"><label for="img_mission">Mission / Vision Image Panel (image-content-one)</label><input type="text" id="img_mission" class="form-control" data-field="img_mission"></div>
-<div class="form-group"><label for="img_training">Human Capacity Image Panel (image-content-two)</label><input type="text" id="img_training" class="form-control" data-field="img_training"></div>
-<div class="form-group"><label for="img_about_hero">About Page Header Background</label><input type="text" id="img_about_hero" class="form-control" data-field="img_about_hero"></div>
-<div class="form-group"><label for="img_services_hero">Services Page Header Background</label><input type="text" id="img_services_hero" class="form-control" data-field="img_services_hero"></div>
-<div class="form-group"><label for="img_projects_hero">Projects Page Header Background</label><input type="text" id="img_projects_hero" class="form-control" data-field="img_projects_hero"></div>
-<div class="form-group"><label for="img_contact_hero">Contact Page Header Background</label><input type="text" id="img_contact_hero" class="form-control" data-field="img_contact_hero"></div>
+<div class="alert alert-success small">
+<i class="fas fa-check-circle"></i> PNG, JPEG, WEBP, and GIF all work exactly the same for backgrounds. If an image appears missing, check the preview thumbnail below the input: if it shows a broken icon, the file path or URL is wrong (typo, wrong folder, or the file hasn't been uploaded/deployed yet). The overlay tint is preserved so hero text stays readable over any image you set.
+</div>
+<div class="form-group">
+<label for="img_hero1">Hero 1 Background (hero-one)</label>
+<input type="text" id="img_hero1" class="form-control" data-field="img_hero1">
+<div class="agl-img-preview mt-2" data-preview-for="img_hero1"></div>
+</div>
+<div class="form-group">
+<label for="img_hero2">Hero 2 Background (hero-two)</label>
+<input type="text" id="img_hero2" class="form-control" data-field="img_hero2">
+<div class="agl-img-preview mt-2" data-preview-for="img_hero2"></div>
+</div>
+<div class="form-group">
+<label for="img_hero3">Hero 3 Background (hero-three)</label>
+<input type="text" id="img_hero3" class="form-control" data-field="img_hero3">
+<div class="agl-img-preview mt-2" data-preview-for="img_hero3"></div>
+</div>
+<div class="form-group">
+<label for="img_mission">Mission / Vision Image Panel (image-content-one)</label>
+<input type="text" id="img_mission" class="form-control" data-field="img_mission">
+<div class="agl-img-preview mt-2" data-preview-for="img_mission"></div>
+</div>
+<div class="form-group">
+<label for="img_training">Human Capacity Image Panel (image-content-two)</label>
+<input type="text" id="img_training" class="form-control" data-field="img_training">
+<div class="agl-img-preview mt-2" data-preview-for="img_training"></div>
+</div>
+<div class="form-group">
+<label for="img_about_hero">About Page Header Background</label>
+<input type="text" id="img_about_hero" class="form-control" data-field="img_about_hero">
+<div class="agl-img-preview mt-2" data-preview-for="img_about_hero"></div>
+</div>
+<div class="form-group">
+<label for="img_services_hero">Services Page Header Background</label>
+<input type="text" id="img_services_hero" class="form-control" data-field="img_services_hero">
+<div class="agl-img-preview mt-2" data-preview-for="img_services_hero"></div>
+</div>
+<div class="form-group">
+<label for="img_projects_hero">Projects Page Header Background</label>
+<input type="text" id="img_projects_hero" class="form-control" data-field="img_projects_hero">
+<div class="agl-img-preview mt-2" data-preview-for="img_projects_hero"></div>
+</div>
+<div class="form-group">
+<label for="img_contact_hero">Contact Page Header Background</label>
+<input type="text" id="img_contact_hero" class="form-control" data-field="img_contact_hero">
+<div class="agl-img-preview mt-2" data-preview-for="img_contact_hero"></div>
+</div>
 </div>
 </div>
 <div class="alert alert-info">
-For image uploads to persist across sessions, connect this panel to a backend storage (e.g. Firebase Storage, AWS S3). For now, paste in relative paths from the <code>img/</code> folder.
+For image uploads to persist across sessions, connect this panel to a backend storage (e.g. Firebase Storage, AWS S3). For now, paste in relative paths from the <code>img/</code> folder, or absolute URLs including <code>https://</code>.
 </div>
 <button type="button" class="btn btn-primary btn-save-section" data-section="images"><i class="fas fa-save"></i> Save Image Settings</button> <button type="button" class="btn btn-success btn-publish-section ml-2" data-section="images"><i class="fas fa-cloud-upload-alt"></i> Publish to Live Site</button>
 </section>
