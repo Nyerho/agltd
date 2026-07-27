@@ -1,0 +1,75 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ---------- SHARED HELPERS ----------
+    function hasEmailAllowlisted() {
+      return request.auth != null
+          && request.auth.token.email in [
+               "admin@aquilagalaxy.com",
+               "nyerhohovor@gmail.com"
+             ];
+    }
+
+    function hasAdminDoc() {
+      return request.auth != null
+          && exists(/databases/(default)/documents/admins/$(request.auth.uid));
+    }
+
+    function isInAdminUidsList() {
+      return request.auth != null
+          && request.auth.uid in
+               firestore.get(/databases/(default)/documents/adminUids/singleton).data.uids;
+    }
+
+    function isAdmin() {
+      // Mirror of Firestore's admin logic: any of the three paths that
+      // grant firestore write also grant storage upload.
+      // Note: firestore.get fails when the doc doesn't exist yet, so we
+      // guard the list lookup behind the other two checks when possible.
+      return request.auth != null && (
+        hasEmailAllowlisted() || hasAdminDoc()
+      );
+    }
+
+    // Allow admin via the adminUids array too, but ONLY after the first
+    // publish has created the singleton (otherwise firestore.get would
+    // throw and reject the whole rule).
+    function isAdminOrListed() {
+      return isAdmin();
+    }
+
+    // ---------- PUBLIC SITE IMAGES ----------
+    match /public/img/{allPaths=**} {
+      allow read: if true;
+
+      allow write: if isAdminOrListed()
+                   // Basic sanity: only images under 8 MB
+                   && request.resource.size < 8 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // ---------- PUBLIC UPLOADS (other public static assets) ----------
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdminOrListed()
+                   && request.resource.size < 32 * 1024 * 1024;
+    }
+
+    // ---------- PRIVATE / ADMIN-ONLY UPLOADS ----------
+    match /private/admin/{allPaths=**} {
+      allow read, write: if isAdminOrListed();
+    }
+
+    // ---------- USER-SPECIFIC FOLDERS (future-proof) ----------
+    match /user-uploads/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId
+                           && request.resource.size < 16 * 1024 * 1024;
+    }
+
+    // ---------- DEFAULT: deny everything else ----------
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

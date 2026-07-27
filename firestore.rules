@@ -1,0 +1,111 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- SHARED HELPERS ----------
+    // A user is considered an "admin content editor" if ANY of the three
+    // conditions below are true (works for anonymous, email/password,
+    // Google sign-in, and any other provider):
+    //   1. Their Firebase Auth UID exists as a document key in /admins/
+    //   2. Their Firebase Auth UID appears in the uids[] array of /adminUids/singleton
+    //   3. Their Firebase Auth token.email is in the hard-coded allowlist
+    function isAdmin() {
+      return request.auth != null && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.uid in get(/databases/$(database)/documents/adminUids/singleton).data.uids ||
+        request.auth.token.email in [
+          "admin@aquilagalaxy.com",
+          "nyerhohovor@gmail.com"
+        ]
+      );
+    }
+
+    // True ONLY while the admin panel is being bootstrapped (the
+    // /adminUids/singleton document does NOT exist yet and the request
+    // creator has not been granted admin any other way). This lets the
+    // FIRST person who clicks "Publish" from the admin panel onboard
+    // themselves automatically — no Firebase Console setup required.
+    function isFirstTimeBootstrap() {
+      return request.auth != null
+          && !exists(/databases/$(database)/documents/adminUids/singleton)
+          && !isAdmin();
+    }
+
+    function isBootstrapSelfGrant() {
+      // /admins/{uid} being written with uid = request.auth.uid
+      // during first install - only allows the caller to add THEMSELVES
+      // once. All further admin grants must come from an existing admin.
+      return request.auth != null
+        && isFirstTimeBootstrap()
+        && request.auth.uid == request.resource.id;
+    }
+
+    // ---------- SITE CONTENT (public read, admins-only write) ----------
+    // Firestore document where the admin panel publishes the site content:
+    //   /siteContent/v1
+    match /siteContent/v1 {
+      allow read: if true;
+
+      allow write: if isAdmin()
+                   // First-time auto-onboard: also allow writes so
+                   // publish itself works AND creates the admin list.
+                   || (isFirstTimeBootstrap() && request.auth != null);
+    }
+
+    // Fallthrough for any future "siteContent/*" sibling docs.
+    match /siteContent/{anyDoc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ---------- ADMIN ROSTER: UID-level per-admin doc model ----------
+    // Add a doc here for every admin: /admins/<firebase-auth-uid>
+    // Document content doesn't matter (you can store name, email, role).
+    match /admins/{uid} {
+      allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+
+      allow create: if isAdmin() || isBootstrapSelfGrant();
+
+      allow update, delete: if isAdmin();
+    }
+
+    // ---------- ADMIN ROSTER: convenient flat list (optional) ----------
+    // Single doc /adminUids/singleton with a field `uids` that is an
+    // array of Firebase Auth UID strings. Easier than creating 1 doc per
+    // admin if you only have a handful of users.
+    match /adminUids/singleton {
+      allow read: if request.auth != null && isAdmin();
+
+      allow create: if isFirstTimeBootstrap() && request.auth != null
+                     // First write MUST include the caller's uid
+                     && request.resource.data.uids is list
+                     && request.auth.uid in request.resource.data.uids;
+
+      allow update: if isAdmin()
+                     && request.resource.data.uids is list;
+
+      allow delete: if isAdmin();
+    }
+
+    // ---------- PROJECTS (optional separate collection) ----------
+    match /projects/{projectId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ---------- CONTACT FORM SUBMISSIONS ----------
+    match /contactMessages/{msgId} {
+      allow create: if request.resource.data.keys().hasAll(['name','email','message'])
+                    && request.resource.data.email is string
+                    && request.resource.data.name.size() < 120
+                    && request.resource.data.email.size() < 160
+                    && request.resource.data.message.size() < 5000;
+      allow read, delete: if isAdmin();
+    }
+
+    // ---------- DEFAULT: deny everything else ----------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

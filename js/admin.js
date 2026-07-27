@@ -563,10 +563,107 @@ $(document).ready(function () {
         }
     }
 
+    async function ensureAmListedAdmin(fb, doBootstrap) {
+        // Ensures the currently signed-in user's UID is present in
+        // /admins/{uid} (doc) and /adminUids/singleton.uids (array).
+        // Uses Firestore transaction-free best-effort approach because
+        // the admin panel is a single-user tool.
+        const { db, doc, setDoc, getDoc } = fb;
+        const uid = fb.auth.currentUser && fb.auth.currentUser.uid;
+        if (!uid) return false;
+
+        try {
+            // 1. Admins doc
+            try {
+                const snap = await getDoc(doc(db, "admins", uid));
+                if (!snap.exists()) {
+                    await setDoc(doc(db, "admins", uid), {
+                        createdAt: new Date().toISOString(),
+                        firstSeenBy: "admin-panel-bootstrap",
+                        provider: (fb.auth.currentUser.providerData[0] && fb.auth.currentUser.providerData[0].providerId) || "anonymous",
+                        email: fb.auth.currentUser.email || null,
+                        grantSource: (doBootstrap ? "auto-bootstrap" : "existing-admin-re-grant")
+                    });
+                }
+            } catch (_) {}
+
+            // 2. Admin UIDs singleton list
+            try {
+                const snapUids = await getDoc(doc(db, "adminUids", "singleton"));
+                let list = [];
+                if (snapUids.exists() && Array.isArray(snapUids.data().uids)) {
+                    list = snapUids.data().uids.slice();
+                }
+                if (!list.includes(uid)) list.push(uid);
+                await setDoc(doc(db, "adminUids", "singleton"), { uids: list }, { merge: !snapUids.exists() ? false : true });
+            } catch (_) {}
+
+            return true;
+        } catch (e) {
+            console.warn("ensureAmListedAdmin failed", e);
+            return false;
+        }
+    }
+
     async function saveAllSectionsToMemory() {
         ["home", "about", "services", "projects", "contact", "partners", "images"].forEach(readFieldsIntoMemory);
         collectDynamicLists();
         saveContent();
+    }
+
+    async function listAdmins(fb) {
+        const { db, doc, getDoc, collection, getDocs } = fb;
+        const out = [];
+        try {
+            const snap = await getDoc(doc(db, "adminUids", "singleton"));
+            if (snap.exists() && Array.isArray(snap.data().uids)) {
+                snap.data().uids.forEach(uid => out.push({ uid, source: "adminUids/singleton.uids" }));
+            }
+        } catch (_) {}
+        try {
+            const snap = await getDocs(collection(db, "admins"));
+            snap.forEach(d => {
+                if (!out.find(x => x.uid === d.id)) out.push({ uid: d.id, source: "admins/" + d.id, data: d.data() });
+                else {
+                    const existing = out.find(x => x.uid === d.id);
+                    existing.data = d.data();
+                    existing.source = existing.source + " + admins/" + d.id;
+                }
+            });
+        } catch (_) {}
+        return out;
+    }
+
+    async function grantAdminUid(fb, newUid, email) {
+        if (!newUid || typeof newUid !== "string") throw new Error("UID is required.");
+        const { db, doc, setDoc, getDoc } = fb;
+        // Grant via admins doc
+        await setDoc(doc(db, "admins", newUid), {
+            createdAt: new Date().toISOString(),
+            grantedBy: (fb.auth.currentUser && fb.auth.currentUser.uid) || "unknown",
+            email: email || null,
+            grantSource: "manual-grant-from-admin-panel"
+        });
+        // Also append to adminUids/singleton
+        let list = [];
+        try {
+            const snap = await getDoc(doc(db, "adminUids", "singleton"));
+            if (snap.exists() && Array.isArray(snap.data().uids)) list = snap.data().uids.slice();
+        } catch (_) {}
+        if (!list.includes(newUid)) list.push(newUid);
+        await setDoc(doc(db, "adminUids", "singleton"), { uids: list }, { merge: true });
+    }
+
+    async function revokeAdminUid(fb, revokeUid) {
+        const { db, doc, deleteDoc, getDoc, setDoc } = fb;
+        try { await deleteDoc(doc(db, "admins", revokeUid)); } catch (_) {}
+        try {
+            const snap = await getDoc(doc(db, "adminUids", "singleton"));
+            if (snap.exists() && Array.isArray(snap.data().uids)) {
+                const list = snap.data().uids.filter(x => x !== revokeUid);
+                await setDoc(doc(db, "adminUids", "singleton"), { uids: list }, { merge: true });
+            }
+        } catch (_) {}
     }
 
     async function publishToFirestore() {
@@ -574,19 +671,32 @@ $(document).ready(function () {
         setPublishStatus("Publishing to live site…", "working");
         const fb = await withFirebase();
         if (!fb.ok) { setPublishStatus(fb.error, "error"); return false; }
+        const uid = (fb.auth.currentUser && fb.auth.currentUser.uid) || null;
         try {
+            // 1. If we are first-time, perform bootstrap self-grant BEFORE writing
+            //    content so rules' first-time bootstrap window can create the
+            //    admin records with the correct privileges.
+            await ensureAmListedAdmin(fb, true);
+
+            // 2. Write the site content. If this is the very first publish,
+            //    rules allow it via isFirstTimeBootstrap(); afterwards only
+            //    the freshly-granted admins can write.
             const { db, doc, setDoc } = fb;
             const payload = Object.assign({}, JSON.parse(JSON.stringify(siteContent)), {
                 publishedAt: new Date().toISOString(),
-                publishedBy: (fb.auth && fb.auth.currentUser ? fb.auth.currentUser.uid : "anonymous-admin")
+                publishedBy: uid || "anonymous-admin"
             });
             await setDoc(doc(db, "siteContent", "v1"), payload);
-            setPublishStatus("Published! Site visitors will see your changes in a few seconds.", "success");
+            await refreshAdminUsersUi();
+            setPublishStatus("Published! Site visitors will see your changes in a few seconds. Your browser has been granted admin access (UID " + uid + ").", "success");
             showToast("Published to live site");
             return true;
         } catch (e) {
             console.error(e);
-            const msg = (e && e.message ? e.message : "Publish failed. This may be because your Firebase account is not an admin in Firestore rules. Ensure your admin email is listed in firestore.rules or create an /admins/{uid} Firestore document.");
+            let msg = (e && e.message ? e.message : "Publish failed.");
+            if (/permission|insufficient/i.test(msg)) {
+                msg = "Permission denied. If this is a brand new Firestore instance, deploy the updated firestore.rules with `firebase deploy --only firestore:rules` (they include a first-time bootstrap gate). Then click Publish again and this browser will onboard itself automatically. UID: " + uid + ".";
+            }
             setPublishStatus(msg, "error");
             showToast("Publish failed: " + msg, true);
             return false;
@@ -681,6 +791,104 @@ $(document).ready(function () {
         $img.attr("src", val);
         $wrap.prepend($img);
     }
+
+    async function refreshAdminUsersUi() {
+        const $tbody = $("#admin-users-list");
+        const $badge = $("#admin-user-uid");
+        const $result = $("#add-admin-result");
+        if (!$tbody.length && !$badge.length) return;
+        const fb = await withFirebase();
+        if (!fb.ok) {
+            if ($tbody.length) $tbody.html("<tr><td colspan='3' class='text-danger small'>Firebase not loaded.</td></tr>");
+            return;
+        }
+        const uid = (fb.auth.currentUser && fb.auth.currentUser.uid) || null;
+        if ($badge.length) {
+            if (uid) $badge.text("This browser UID: " + uid).attr("title", "Copy this UID to grant this browser admin access from another browser.");
+            else $badge.text("Not signed in");
+        }
+        if ($tbody.length) {
+            try {
+                const admins = await listAdmins(fb);
+                if (!admins.length) {
+                    $tbody.html("<tr><td colspan='3' class='text-muted small'>No admins yet. Click Publish to Live Site and this browser will auto-onboard itself as the first admin.</td></tr>");
+                } else {
+                    $tbody.html("");
+                    admins.forEach(a => {
+                        const emailHtml = (a.data && a.data.email) ? `<br><small class='text-muted'>${escapeHtml(a.data.email)}</small>` : "";
+                        const selfBadge = (a.uid === uid) ? " <span class='badge badge-info ml-1'>You</span>" : "";
+                        const revokeBtn = (a.uid === uid)
+                            ? ""
+                            : `<button type='button' class='btn btn-sm btn-danger revoke-admin' data-uid="${escapeAttr(a.uid)}" title='Revoke admin'><i class='fas fa-trash-alt'></i></button>`;
+                        $tbody.append(`<tr>
+<td style='font-family:Menlo,Consolas,monospace;font-size:12px;'>${escapeHtml(a.uid)}${emailHtml}</td>
+<td>${escapeHtml(a.source)}${selfBadge}</td>
+<td class='text-right'>${revokeBtn}</td>
+</tr>`);
+                    });
+                }
+            } catch (e) {
+                let msg = (e && e.message ? e.message : String(e));
+                if (/permission|insufficient|denied|missing/i.test(msg)) {
+                    msg = "Permission denied reading admin list. Run `firebase deploy --only firestore:rules` then refresh this page. Details: " + msg;
+                }
+                $tbody.html("<tr><td colspan='3' class='text-danger small'>" + escapeHtml(msg) + "</td></tr>");
+            }
+        }
+    }
+
+    $("#add-admin-btn").on("click", async function () {
+        const $res = $("#add-admin-result");
+        $res.removeClass("text-success text-danger").addClass("text-muted").text("Working…");
+        const fb = await withFirebase();
+        if (!fb.ok) { $res.removeClass("text-muted").addClass("text-danger").text(fb.error); return; }
+        const uidVal = String($("#new-admin-uid").val() || "").trim();
+        const emailVal = String($("#new-admin-email").val() || "").trim();
+        if (!uidVal) {
+            $res.removeClass("text-muted").addClass("text-danger").text("Paste the new browser's Firebase UID first.");
+            return;
+        }
+        try {
+            await grantAdminUid(fb, uidVal, emailVal);
+            $res.removeClass("text-muted").addClass("text-success").text("Granted.");
+            $("#new-admin-uid, #new-admin-email").val("");
+            await refreshAdminUsersUi();
+        } catch (e) {
+            console.error(e);
+            let msg = (e && e.message ? e.message : String(e));
+            if (/permission|insufficient|denied|missing/i.test(msg)) {
+                msg = "Permission denied. Only existing admins can grant admin. Click Publish to Live Site first to onboard THIS browser as an admin, then try granting again. Details: " + msg;
+            }
+            $res.removeClass("text-muted").addClass("text-danger").text(msg);
+        }
+    });
+
+    $(document).on("click", ".revoke-admin", async function () {
+        const uid = $(this).data("uid");
+        if (!uid) return;
+        if (!confirm("Revoke admin access for UID " + uid + "?")) return;
+        const $res = $("#add-admin-result");
+        $res.removeClass("text-success text-danger").addClass("text-muted").text("Revoking…");
+        const fb = await withFirebase();
+        if (!fb.ok) { $res.removeClass("text-muted").addClass("text-danger").text(fb.error); return; }
+        try {
+            await revokeAdminUid(fb, uid);
+            $res.removeClass("text-muted").addClass("text-success").text("Revoked.");
+            await refreshAdminUsersUi();
+        } catch (e) {
+            console.error(e);
+            let msg = (e && e.message ? e.message : String(e));
+            if (/permission|insufficient|denied|missing/i.test(msg)) {
+                msg = "Permission denied. Only existing admins can revoke. Details: " + msg;
+            }
+            $res.removeClass("text-muted").addClass("text-danger").text(msg);
+        }
+    });
+
+    $(async function () {
+        if (!window.aquilagalaxyFirebase) return;
+        await refreshAdminUsersUi();
+    });
 
     function setupAllImagePreviews() {
         const ids = ["img_hero1", "img_hero2", "img_hero3",
