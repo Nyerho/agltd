@@ -720,6 +720,84 @@ h6 {
     line-height: 1;
 }
 
+.agl-new-projects .section-heading {
+    margin-bottom: 30px;
+}
+
+.agl-new-projects .section-heading p {
+    max-width: 760px;
+    margin: 10px auto 0;
+}
+
+.agl-field-project-card {
+    height: 100%;
+}
+
+.agl-field-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.agl-field-photo,
+.agl-inspection-photo {
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--aquila-border);
+    border-radius: 10px;
+    background: #eef5f6;
+}
+
+.agl-field-photo a {
+    display: block;
+    aspect-ratio: 4 / 3;
+    background: #e8f0f2;
+}
+
+.agl-field-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.agl-field-photo figcaption,
+.agl-inspection-photo figcaption {
+    padding: 7px 9px;
+    color: var(--aquila-ink-soft);
+    background: #f6fafb;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.agl-inspection-photo a {
+    display: block;
+    background: #e8f0f2;
+}
+
+.agl-inspection-photo img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: contain;
+    display: block;
+}
+
+.agl-field-photo a:focus-visible,
+.agl-inspection-photo a:focus-visible {
+    outline: 3px solid var(--aquila-primary-dark);
+    outline-offset: -3px;
+}
+
+@media (max-width: 767px) {
+    .agl-field-gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+}
+
 @media (max-width: 991px) {
     .widget-section .site-brand img {
         height: 50px;
